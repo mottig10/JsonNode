@@ -5,23 +5,21 @@ Created on Sat Aug 22 10:53:43 2020
 @author: mottig
 """
 import json,codecs
+import os
 
 class JsonNode:
-
     
-    def __init__(self,jsonDic = {},createNewJson = False,path = ""):
+    def __init__(self,jsonDic = {},path = ""):
         
         if type(jsonDic) == dict and len(jsonDic) != 0:
             self.__jsonDic = jsonDic
-        elif len(path) != 0 and len(jsonDic) == 0:
+        elif len(path).equale() != 0 and len(jsonDic) == 0:
             with open(path,mode = "r+",encoding="utf8") as jsonFile:
                 self.__jsonDic = json.load(jsonFile)
         elif len(path) != 0 and len(jsonDic) !=0 :
             raise Exception("Please insert Dict object or a valid path not both")
         else:
             self.__jsonDic = {}
-        self.__createNewJson = createNewJson
-        
             
     def __repr__(self):
         
@@ -63,7 +61,6 @@ class JsonNode:
         else:
             return True
     
-    
     def minimizeJsonByKey(self,key):
         
        if isinstance(self.__jsonDic[key],dict):
@@ -79,21 +76,18 @@ class JsonNode:
         else:
             raise Exception ("Please insert valid path to a JSON file")
         
-        
     def updateValueByKey(self,key,value):
         if self.checkIfKeyExsists(key):
             self.__jsonDic[key] = value
         else:
             raise Exception ("The key is not exists")
         
-    def createNewJsonFileInDir(self,newFileName):
-        
+    def createNewJsonFileInDir(self,newFileName="New File"):
         jsonObject = json.dumps(self.__jsonDic)
         with codecs.open(newFileName+".json", 'w',encoding="utf8") as r:
                 r.write(jsonObject)
     
     def replaceKey(self,keyToReplace,newKey):
-        
         if keyToReplace not in self.getAllKeys(self.__jsonDic):
             raise Exception ("The key is not exists")
         jsonString = json.dumps(self.__jsonDic).replace(keyToReplace,newKey)
@@ -117,37 +111,9 @@ class JsonNode:
                          newDict[itemInList] = newDict[itemInList] + 1
                      
         return newDict
-
+    
     def __checkNotDictAndNotList(self,value):
         if not isinstance(value,dict) and not isinstance(value,list):
             return True
         else:
             return False 
-    
-thisdict = {
-  "model": {"motti":[{"asd":"otti"},{"second":"motti"}]},
-  "year":"motti",
-    "asd":[{"motfti":{"motti":[{"moatti":"motti"}]}}]}
-jn = JsonNode(thisdict)
-d ={}
-print(jn.getAllValuesOccurrence(jn.getJson()))
-#jn.setNewJson(thisdict)
-#jn.replaceKey("Mustang","aotti")
-#print(jn)
-#jn.createNewJsonFile("testfile")
-r = {}
-t = []
-if not isinstance(t,dict)  and  not isinstance(r,dict):
-    print("yes")
-"""            
-thisdict = {
-  "model": {"Mustang":{"car123":"34"}},
-  "year": [{"Mustange":{"car1234":"344"}},{"c":"er"}] }      
-jn = JsonNode(thisdict)
-
-
-#jn.loadJsonFile("Action.json")
-x = jn.getValues("car123")
-print(x)
-
-"""
